@@ -1,5 +1,5 @@
-import 'package:aplicativooficial/db/my_database.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import '../my_database.dart';
 part 'OutroDAO.g.dart';
 @UseDao(tables:[Outros])
 class OutroDAO extends DatabaseAccessor<MyDataBase> with _$OutroDAOMixin{

@@ -1,3 +1,4 @@
+import 'package:ematerapp/db/my_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
@@ -8,6 +9,9 @@ class AddMaoDeObra extends StatefulWidget {
 
 class _AddMaoDeObraState extends State<AddMaoDeObra> {
  DateTime _data = new DateTime.now();
+ int preco;
+ String name, data;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +29,9 @@ class _AddMaoDeObraState extends State<AddMaoDeObra> {
                    border: OutlineInputBorder(),
                    hintText: "Nome",
                  ),
+                 onChanged: (text){
+                   name = text;
+                 },
                ),
                TextField(
                   keyboardType: TextInputType.number,
@@ -32,6 +39,9 @@ class _AddMaoDeObraState extends State<AddMaoDeObra> {
                     border: OutlineInputBorder(),
                     hintText: "Valor",
                   ),
+                  onChanged: (v){
+                    preco = int.parse(v);
+                  },
                ),
             new FlatButton(
               
@@ -49,7 +59,7 @@ class _AddMaoDeObraState extends State<AddMaoDeObra> {
             
                 new Text(
                   
-                     ' ${formatDate(_data, [dd, '-', mm, '-', yyyy])}',
+                     data =' ${formatDate(_data, [dd, '-', mm, '-', yyyy])}',
                      style: TextStyle(fontSize: 20,
                      color: Colors.blueGrey,
                           
@@ -83,7 +93,8 @@ class _AddMaoDeObraState extends State<AddMaoDeObra> {
                ),
             FloatingActionButton.extended(
                  onPressed: () {
-                  Navigator.pushNamed(context,"/MaoDeObraWidget");
+                  Navigator.pop(context);
+                  MyDataBase.instance.maoDeObraDAO.addMaoDeObra(MaoDeObra(prince: preco, nome: name, ano: data));
                   },
                 icon: Icon(Icons.thumb_up), 
                 label: Text('OK'),

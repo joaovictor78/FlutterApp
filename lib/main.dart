@@ -1,20 +1,20 @@
-import 'package:aplicativooficial/Caracteristicas/AddItens/AddWidget.dart';
-import 'package:aplicativooficial/Caracteristicas/CaracteristicasWidget.dart';
-import 'package:aplicativooficial/Controledegastos/listadegastos.dart';
-import 'package:aplicativooficial/CustoDeProducao/CustoDeProducaoWidget.dart';
-import 'package:aplicativooficial/DespesasAdminWidget/AddDespesas.dart';
-import 'package:aplicativooficial/HomeWidget/login-page.dart';
-import 'package:aplicativooficial/HomeWidget/splash.dart';
-import 'package:aplicativooficial/InsumosWidget/AddInsumos.dart';
-import 'package:aplicativooficial/InsumosWidget/InsumosWidget.dart';
-import 'package:aplicativooficial/Items/ItensWidget.dart';
-import 'package:aplicativooficial/MaoDeObraWidget/AddMaoDeObra.dart';
-import 'package:aplicativooficial/OutrosWidget/AddOutros.dart';
-import 'package:aplicativooficial/OutrosWidget/OutrosWidget.dart';
 import 'package:flutter/material.dart';
+import 'Caracteristicas/CaracteristicasWidget.dart';
 import 'Controledegastos/GraficosWidget/Graficos.dart';
+import 'Controledegastos/listadegastos.dart';
+import 'CustoDeProducao/CustoDeProducaoWidget.dart';
+import 'DespesasAdminWidget/AddDespesas.dart';
 import 'DespesasAdminWidget/DespesasAdminWidgets.dart';
+import 'HomeWidget/login-page.dart';
+import 'HomeWidget/splash.dart';
+import 'InsumosWidget/AddInsumos.dart';
+import 'InsumosWidget/InsumosWidget.dart';
+import 'Items/AddItens/AddWidget.dart';
+import 'Items/ItensWidget.dart';
+import 'MaoDeObraWidget/AddMaoDeObra.dart';
 import 'MaoDeObraWidget/MaoDeObraWidget.dart';
+import 'OutrosWidget/AddOutros.dart';
+import 'OutrosWidget/OutrosWidget.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
         '/': (BuildContext context)=>
         new LoginPage(),
         '/CaracteristicasWidget': (BuildContext context) =>
-        new CaracteristicasWidget(),
+        new InformacoesPropriedade(buttonText: "Ok", description: "É um prazer termos um usuario como você, o aplicativo foi feito pensando cada detalhe para facilitar sua vida. Esperamos que goste do aplicativo e faça bom proveito. Atenciosamente os desenvolvedores ❤", title: "Agrocontábil"),
          '/ItensWidget': (BuildContext context) =>
         new ItensWidget(),
            '/AddWidget': (BuildContext context) =>

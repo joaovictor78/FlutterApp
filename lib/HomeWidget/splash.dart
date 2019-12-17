@@ -1,7 +1,6 @@
-import 'package:aplicativooficial/HomeWidget/login-page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'login-page.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -9,28 +8,52 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Future.delayed(Duration(seconds: 4)).then((_){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+    Future.delayed(Duration(seconds: 4)).then((_) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-            color: Colors.blue,
-            child: Center(
-              child: Container(
-                width: 150,
-                height: 150,
-                child: Image.asset("assets/tratorloading.gif"),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            Colors.green[900],
+            Colors.green[600],
+          ],
+        ),
+      ),
+      child: Center(
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              child: Text(
+                "AGROCONTÁBIL",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 40,
+                  fontFamily: "Arial",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            )
-        );
+            ),
+            Positioned(
+            child: Image.asset("assets/logoagricontabil.png"),
+            ),  
+          ],
+        ), 
+      ),
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:ematerapp/db/my_database.dart';
 import 'package:flutter/material.dart';
 class OutrosWidgets extends StatefulWidget {
   @override
@@ -7,38 +8,57 @@ class OutrosWidgets extends StatefulWidget {
 class _OutrosWidgetsState extends State<OutrosWidgets> {
    @override
   Widget build(BuildContext context) {
-   return Scaffold(
-      appBar: AppBar(title: Text("Outras despesas",),
-      actions: <Widget>[
-      IconButton(
-        icon: Icon(Icons.add),
-        onPressed:(){
-         Navigator.pushNamed(context, "/AddOutros");
+return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Outras despesas",
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, "/AddOutros");
+            },
+          ),
+        ],
+      ),
+      body: StreamBuilder<List<Outro>>(
+        stream: MyDataBase.instance.outroDAO.listAll(),
+        initialData: [],
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Container();
+          List<Outro> outros = snapshot.data;
+          return ListView.builder(
+            itemCount: outros.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                leading: IconButton(
+                  onPressed: () {
+                    MyDataBase.instance.outroDAO.removeOutro((outros[index].id));
+                  },
+                  icon: Icon(Icons.delete),
+                ),
+                trailing: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.visibility),
+                ),
+                title: Text(outros[index].nome),
+                subtitle: Text(outros[index].prince.toString()),
+              );
+            },
+          );
         },
       ),
-        
-      ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-      child: Form(
-        child: ListView(
-          children: <Widget>[
-             Text("Você pode clicar em + para adicionar uma nova lista :)"),
-            RaisedButton(
-              onPressed: (){
-                Navigator.pushNamed(context, "/CustoDeProducaoWidget");
-              },
-              child: const Text(
-            'Pronto',
-            style: TextStyle(fontSize: 20)
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+       label: Container(
+            width: 220,
+            child: Text("Proximo", textAlign: TextAlign.center,),  
           ),
-            )
-        
-          ],
-        ),
-        ),
+        icon: Icon(Icons.keyboard_arrow_right),
       ),
-   );
+    );
   }
 }

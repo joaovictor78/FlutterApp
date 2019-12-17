@@ -1,10 +1,12 @@
-import 'package:aplicativooficial/db/dao/CaracteristicaDAO.dart';
-import 'package:aplicativooficial/db/dao/DespesaDAO.dart';
-import 'package:aplicativooficial/db/dao/InsumoDAO.dart';
-import 'package:aplicativooficial/db/dao/ItemDAO.dart';
-import 'package:aplicativooficial/db/dao/MaoDeObraDAO.dart';
-import 'package:aplicativooficial/db/dao/OutroDAO.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+
+import 'CustoIndiretoDAO.dart';
+import 'dao/CaracteristicaDAO.dart';
+import 'dao/DespesaDAO.dart';
+import 'dao/InsumoDAO.dart';
+import 'dao/ItemDAO.dart';
+import 'dao/MaoDeObraDAO.dart';
+import 'dao/OutroDAO.dart';
 part 'my_database.g.dart';
 
 class Caracteristicas extends Table{
@@ -18,34 +20,45 @@ class Caracteristicas extends Table{
 }
 class Itens extends Table{
 IntColumn get id => integer().autoIncrement()();
-TextColumn get nome => text().withLength(max: 10)();
+TextColumn get nome => text().withLength(max: 30)();
+IntColumn get valororiginal => integer()();
+IntColumn get valorresidual => integer()();
 IntColumn get vidautil =>  integer()();
 IntColumn get percentual => integer()();
 IntColumn get deprec3 => integer()();
 IntColumn get deprec1 => integer()();
 }
-
 class MaoDeObras extends Table{
 IntColumn get id => integer().autoIncrement()();
+TextColumn get nome =>  text()();
 IntColumn get prince => integer()();
 TextColumn get ano => text()();
 }
 class Insumos extends Table{
 IntColumn get id => integer().autoIncrement()();
+TextColumn get nome =>  text()();
 IntColumn get prince => integer()();
 TextColumn get ano => text()();
 }
 class Despesas extends Table{
 IntColumn get id => integer().autoIncrement()();
+TextColumn get nome =>  text()();
 IntColumn get prince => integer()();
 TextColumn get ano => text()();
 }
 class Outros extends Table{
 IntColumn get id => integer().autoIncrement()();
+TextColumn get nome =>  text()();
 IntColumn get prince => integer()();
 TextColumn get ano => text()();
 }
-@UseMoor(tables: [Caracteristicas, Itens, MaoDeObras, Insumos, Despesas, Outros])
+class CustosIndiretos extends Table{
+IntColumn get id => integer().autoIncrement()();
+IntColumn get depreciacao => integer()();
+IntColumn get custooportt => integer()();
+IntColumn get custooportc => integer()();
+}
+@UseMoor(tables: [Caracteristicas, Itens, MaoDeObras, Insumos, Despesas, Outros, CustosIndiretos])
 
 class MyDataBase extends _$MyDataBase{
   static MyDataBase instance = MyDataBase._internal();
@@ -55,13 +68,15 @@ class MyDataBase extends _$MyDataBase{
   ItemDAO itemDAO;
   MaoDeObraDAO maoDeObraDAO;
   OutroDAO outroDAO;
+  CustoIndiretoDAO custoIndiretoDAO;
   MyDataBase._internal(): super(FlutterQueryExecutor.inDatabaseFolder(path: 'db.sqlite')){
-  CaracteristicaDAO(this);
-  DespesaDAO(this);
-  InsumoDAO(this);
-  ItemDAO(this);
-  MaoDeObraDAO(this);
-  OutroDAO(this);
+  caracteristicaDAO = CaracteristicaDAO(this);
+  despesaDAO = DespesaDAO(this);
+  insumoDAO = InsumoDAO(this);
+  itemDAO = ItemDAO(this);
+  maoDeObraDAO = MaoDeObraDAO(this);
+  outroDAO = OutroDAO(this);
+  custoIndiretoDAO = CustoIndiretoDAO(this);
   }
   @override
   int get schemaVersion => 1;

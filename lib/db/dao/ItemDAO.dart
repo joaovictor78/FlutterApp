@@ -1,5 +1,5 @@
-import 'package:aplicativooficial/db/my_database.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import '../my_database.dart';
 part 'ItemDAO.g.dart';
 @UseDao(tables: [Itens])
 class ItemDAO extends DatabaseAccessor<MyDataBase> with _$ItemDAOMixin{

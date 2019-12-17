@@ -1,4 +1,5 @@
 
+import 'package:ematerapp/db/my_database.dart';
 import 'package:flutter/material.dart';
 
 class MaoDeObraWidget extends StatefulWidget {
@@ -21,26 +22,45 @@ class _MaoDeObraWidgetState extends State<MaoDeObraWidget> {
         
       ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-      child: Form(
-        child: ListView(
-          children: <Widget>[
-             Text("Você pode clicar em + para adicionar uma nova mão de obra :)"),
-            RaisedButton(
-              onPressed: (){
-                Navigator.pushNamed(context, "/CustoDeProducaoWidget");
-              },
-              child: const Text(
-            'Pronto',
-            style: TextStyle(fontSize: 20)
+        body: StreamBuilder<List<MaoDeObra>>(
+      stream: MyDataBase.instance.maoDeObraDAO.listAll(),
+      initialData: [],
+      builder: (context, snapshot){
+        if(!snapshot.hasData) return Container();
+        List<MaoDeObra> maoDeObras = snapshot.data;
+        return ListView.builder(
+        itemCount: maoDeObras.length,
+        itemBuilder: (BuildContext context, int index){
+          return ListTile(
+          leading: IconButton(
+            onPressed:(){
+              MyDataBase.instance.maoDeObraDAO.removeMaoDeObra((maoDeObras[index].id));
+            },  
+            icon: Icon(Icons.delete),
           ),
-            )
-        
-          ],
-        ),
-        ),
+          trailing: IconButton(onPressed:(){
+          },
+          icon: Icon(Icons.visibility),
+          ),
+          title: Text(maoDeObras[index].nome),
+          subtitle: Text(maoDeObras[index].prince.toString()),
+          );
+        },
+        );
+      },
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed:(){
+          Navigator.pop(context);
+          
+        },
+         label: Container(
+            width: 230,
+            child: Text("Proximo", textAlign: TextAlign.center,),  
+          ), 
+        icon: Icon(Icons.keyboard_arrow_right),
+      ),
+
    );
   }
 }

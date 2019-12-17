@@ -1,114 +1,105 @@
-import 'package:aplicativooficial/db/my_database.dart';
+import 'package:ematerapp/widgets_componets/BodyCaracteristicasWidget.dart';
 import 'package:flutter/material.dart';
-class CaracteristicasWidget extends StatefulWidget {
+
+import 'ApresentacaoDialog/apresentacaodialog.dart';
+class InformacoesPropriedade extends StatefulWidget {
+  final String title, description, buttonText;
+  final Image image;
+  InformacoesPropriedade({
+    @required this.title,
+    @required this.description,
+    @required this.buttonText,
+    this.image,
+  });
   @override
-  _CaracteristicasWidgetState createState() => _CaracteristicasWidgetState();
+  _InformacoesPropriedadeState createState() => _InformacoesPropriedadeState();
 }
-class _CaracteristicasWidgetState extends State<CaracteristicasWidget> {
-  List<String> options = ["Pecuária", "Agronomia", "Pecuária e Agronomia"];
-  String selected;
-  int tam;
-  String estr;
-  String eqpm;
-  int diarist;
-  int empreg;
+class _InformacoesPropriedadeState extends State<InformacoesPropriedade> {
+  bool i = true;
   @override
   Widget build(BuildContext context) {
-    
-     return Scaffold(
-      appBar: AppBar(title: Text("Infraestrutura da propriedade",
-      style: TextStyle(
-        fontSize: 17,
-      ),), 
-      backgroundColor: Colors.green,),
-      body:Padding(
-      padding: EdgeInsets.all(0.9),
-      child: Form( 
-      child: ListView(
-        children: <Widget>[
-            TextField(
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: "Tamanho da terra em (ha) :"
-              ),
-              onChanged: (value){
-                tam = int.parse(value);
-              },
-            ),
-            SizedBox(
-            height: 9,
-            ),
-          Container(
-             child: DropdownButtonFormField(
-                hint: Text("Atividades :"),
-                value: selected,
-                items: options
-                    .map((option) => DropdownMenuItem(
-                          child: Text(option),
-                          value: option,
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selected = value;
-                  }); 
-                },
-              ),
-            ),
-            TextField(
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: "N° Empregados :"
-              ),
-              onChanged: (text){
-                empreg = int.parse(text);
-              },
-            ),
-             TextField(
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: "N° Diaristas :"
-              ),
-              onChanged: (text){
-                diarist = int.parse(text);
-              },
-            ),
-             TextField(
-            decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: " Descrição da estrutura da fazenda:"
-              ),
-              onChanged: (text){
-                estr = text;
-              },
-            ),
-             TextField(
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: " N° Maquinas/Equipamentos :"
-              ),
-              onChanged: (text){
-                eqpm = text;
-              },
-            ),  
-                    RaisedButton(
-          onPressed: () {
-            MyDataBase.instance.caracteristicaDAO.addCaracteristica(Caracteristica(estrutura: estr, atividades: selected, tamanho: tam, equipamentos: eqpm, diaristas: diarist, empregados: empreg, id: 1));
-            Navigator.pushNamed(context, "/ItensWidget");
-          },
-          child: const Text(
-            'Proximo',
-            style: TextStyle(fontSize: 20)
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Infraestrutura da propriedade",
+            style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
         ),
-        ], 
       ),
-      )
+      body: Stack(
+        children:[
+         BodyCaracteristicasWidget(),
+         ApresentacaoDialog(title: "Agrocontábil", description: "Aqui entra a descrição", buttonText: "Ok",
+         ),
+   ],
       ),
-      );
+    );
+  }
+  dialogContent(BuildContext context) {
+    return  Container(
+          padding: EdgeInsets.only(
+            top: Consts.avatarRadius + Consts.padding,
+            bottom: Consts.padding,
+            left: Consts.padding,
+            right: Consts.padding,
+          ),
+          margin: EdgeInsets.only(top: Consts.avatarRadius),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(Consts.padding),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, 
+            children: <Widget>[
+              Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                widget.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              SizedBox(height: 24.0),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(widget.buttonText),
+                ),
+              ),
+              Positioned(
+          left: Consts.padding,
+          right: Consts.padding,
+          child: CircleAvatar(
+            backgroundColor: Colors.blueAccent,
+            radius: Consts.avatarRadius,
+          ),
+        ),
+            ],
+          ),
+    );
   }
 }
+class Consts {
+  Consts._();
+  static const double padding = 16.0;
+  static const double avatarRadius = 66.0;
+}   

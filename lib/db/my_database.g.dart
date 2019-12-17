@@ -6,7 +6,7 @@ part of 'my_database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: unnecessary_brace_in_string_interps
 class Caracteristica extends DataClass implements Insertable<Caracteristica> {
   final int id;
   final int tamanho;
@@ -72,7 +72,8 @@ class Caracteristica extends DataClass implements Insertable<Caracteristica> {
   }
 
   @override
-  Future<CaracteristicasCompanion> createCompanion(bool nullToAbsent) async {
+  T createCompanion<T extends UpdateCompanion<Caracteristica>>(
+      bool nullToAbsent) {
     return CaracteristicasCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       tamanho: tamanho == null && nullToAbsent
@@ -93,7 +94,7 @@ class Caracteristica extends DataClass implements Insertable<Caracteristica> {
       equipamentos: equipamentos == null && nullToAbsent
           ? const Value.absent()
           : Value(equipamentos),
-    );
+    ) as T;
   }
 
   Caracteristica copyWith(
@@ -142,13 +143,13 @@ class Caracteristica extends DataClass implements Insertable<Caracteristica> {
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Caracteristica &&
-          other.id == this.id &&
-          other.tamanho == this.tamanho &&
-          other.atividades == this.atividades &&
-          other.empregados == this.empregados &&
-          other.diaristas == this.diaristas &&
-          other.estrutura == this.estrutura &&
-          other.equipamentos == this.equipamentos);
+          other.id == id &&
+          other.tamanho == tamanho &&
+          other.atividades == atividades &&
+          other.empregados == empregados &&
+          other.diaristas == diaristas &&
+          other.estrutura == estrutura &&
+          other.equipamentos == equipamentos);
 }
 
 class CaracteristicasCompanion extends UpdateCompanion<Caracteristica> {
@@ -168,20 +169,6 @@ class CaracteristicasCompanion extends UpdateCompanion<Caracteristica> {
     this.estrutura = const Value.absent(),
     this.equipamentos = const Value.absent(),
   });
-  CaracteristicasCompanion.insert({
-    this.id = const Value.absent(),
-    @required int tamanho,
-    @required String atividades,
-    @required int empregados,
-    @required int diaristas,
-    @required String estrutura,
-    @required String equipamentos,
-  })  : tamanho = Value(tamanho),
-        atividades = Value(atividades),
-        empregados = Value(empregados),
-        diaristas = Value(diaristas),
-        estrutura = Value(estrutura),
-        equipamentos = Value(equipamentos);
   CaracteristicasCompanion copyWith(
       {Value<int> id,
       Value<int> tamanho,
@@ -384,13 +371,17 @@ class $CaracteristicasTable extends Caracteristicas
 class Iten extends DataClass implements Insertable<Iten> {
   final int id;
   final String nome;
+  final int valororiginal;
+  final int valorresidual;
   final int vidautil;
   final int percentual;
   final int deprec3;
   final int deprec1;
   Iten(
-      {@required this.id,
+      {this.id,
       @required this.nome,
+      @required this.valororiginal,
+      @required this.valorresidual,
       @required this.vidautil,
       @required this.percentual,
       @required this.deprec3,
@@ -403,6 +394,10 @@ class Iten extends DataClass implements Insertable<Iten> {
     return Iten(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       nome: stringType.mapFromDatabaseResponse(data['${effectivePrefix}nome']),
+      valororiginal: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}valororiginal']),
+      valorresidual: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}valorresidual']),
       vidautil:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}vidautil']),
       percentual:
@@ -418,6 +413,8 @@ class Iten extends DataClass implements Insertable<Iten> {
     return Iten(
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
+      valororiginal: serializer.fromJson<int>(json['valororiginal']),
+      valorresidual: serializer.fromJson<int>(json['valorresidual']),
       vidautil: serializer.fromJson<int>(json['vidautil']),
       percentual: serializer.fromJson<int>(json['percentual']),
       deprec3: serializer.fromJson<int>(json['deprec3']),
@@ -430,6 +427,8 @@ class Iten extends DataClass implements Insertable<Iten> {
     return {
       'id': serializer.toJson<int>(id),
       'nome': serializer.toJson<String>(nome),
+      'valororiginal': serializer.toJson<int>(valororiginal),
+      'valorresidual': serializer.toJson<int>(valorresidual),
       'vidautil': serializer.toJson<int>(vidautil),
       'percentual': serializer.toJson<int>(percentual),
       'deprec3': serializer.toJson<int>(deprec3),
@@ -438,10 +437,16 @@ class Iten extends DataClass implements Insertable<Iten> {
   }
 
   @override
-  ItensCompanion createCompanion(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<Iten>>(bool nullToAbsent) {
     return ItensCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       nome: nome == null && nullToAbsent ? const Value.absent() : Value(nome),
+      valororiginal: valororiginal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(valororiginal),
+      valorresidual: valorresidual == null && nullToAbsent
+          ? const Value.absent()
+          : Value(valorresidual),
       vidautil: vidautil == null && nullToAbsent
           ? const Value.absent()
           : Value(vidautil),
@@ -454,12 +459,14 @@ class Iten extends DataClass implements Insertable<Iten> {
       deprec1: deprec1 == null && nullToAbsent
           ? const Value.absent()
           : Value(deprec1),
-    );
+    ) as T;
   }
 
   Iten copyWith(
           {int id,
           String nome,
+          int valororiginal,
+          int valorresidual,
           int vidautil,
           int percentual,
           int deprec3,
@@ -467,6 +474,8 @@ class Iten extends DataClass implements Insertable<Iten> {
       Iten(
         id: id ?? this.id,
         nome: nome ?? this.nome,
+        valororiginal: valororiginal ?? this.valororiginal,
+        valorresidual: valorresidual ?? this.valorresidual,
         vidautil: vidautil ?? this.vidautil,
         percentual: percentual ?? this.percentual,
         deprec3: deprec3 ?? this.deprec3,
@@ -477,6 +486,8 @@ class Iten extends DataClass implements Insertable<Iten> {
     return (StringBuffer('Iten(')
           ..write('id: $id, ')
           ..write('nome: $nome, ')
+          ..write('valororiginal: $valororiginal, ')
+          ..write('valorresidual: $valorresidual, ')
           ..write('vidautil: $vidautil, ')
           ..write('percentual: $percentual, ')
           ..write('deprec3: $deprec3, ')
@@ -491,24 +502,32 @@ class Iten extends DataClass implements Insertable<Iten> {
       $mrjc(
           nome.hashCode,
           $mrjc(
-              vidautil.hashCode,
-              $mrjc(percentual.hashCode,
-                  $mrjc(deprec3.hashCode, deprec1.hashCode))))));
+              valororiginal.hashCode,
+              $mrjc(
+                  valorresidual.hashCode,
+                  $mrjc(
+                      vidautil.hashCode,
+                      $mrjc(percentual.hashCode,
+                          $mrjc(deprec3.hashCode, deprec1.hashCode))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Iten &&
-          other.id == this.id &&
-          other.nome == this.nome &&
-          other.vidautil == this.vidautil &&
-          other.percentual == this.percentual &&
-          other.deprec3 == this.deprec3 &&
-          other.deprec1 == this.deprec1);
+          other.id == id &&
+          other.nome == nome &&
+          other.valororiginal == valororiginal &&
+          other.valorresidual == valorresidual &&
+          other.vidautil == vidautil &&
+          other.percentual == percentual &&
+          other.deprec3 == deprec3 &&
+          other.deprec1 == deprec1);
 }
 
 class ItensCompanion extends UpdateCompanion<Iten> {
   final Value<int> id;
   final Value<String> nome;
+  final Value<int> valororiginal;
+  final Value<int> valorresidual;
   final Value<int> vidautil;
   final Value<int> percentual;
   final Value<int> deprec3;
@@ -516,26 +535,18 @@ class ItensCompanion extends UpdateCompanion<Iten> {
   const ItensCompanion({
     this.id = const Value.absent(),
     this.nome = const Value.absent(),
+    this.valororiginal = const Value.absent(),
+    this.valorresidual = const Value.absent(),
     this.vidautil = const Value.absent(),
     this.percentual = const Value.absent(),
     this.deprec3 = const Value.absent(),
     this.deprec1 = const Value.absent(),
   });
-  ItensCompanion.insert({
-    this.id = const Value.absent(),
-    @required String nome,
-    @required int vidautil,
-    @required int percentual,
-    @required int deprec3,
-    @required int deprec1,
-  })  : nome = Value(nome),
-        vidautil = Value(vidautil),
-        percentual = Value(percentual),
-        deprec3 = Value(deprec3),
-        deprec1 = Value(deprec1);
   ItensCompanion copyWith(
       {Value<int> id,
       Value<String> nome,
+      Value<int> valororiginal,
+      Value<int> valorresidual,
       Value<int> vidautil,
       Value<int> percentual,
       Value<int> deprec3,
@@ -543,6 +554,8 @@ class ItensCompanion extends UpdateCompanion<Iten> {
     return ItensCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
+      valororiginal: valororiginal ?? this.valororiginal,
+      valorresidual: valorresidual ?? this.valorresidual,
       vidautil: vidautil ?? this.vidautil,
       percentual: percentual ?? this.percentual,
       deprec3: deprec3 ?? this.deprec3,
@@ -569,7 +582,35 @@ class $ItensTable extends Itens with TableInfo<$ItensTable, Iten> {
   @override
   GeneratedTextColumn get nome => _nome ??= _constructNome();
   GeneratedTextColumn _constructNome() {
-    return GeneratedTextColumn('nome', $tableName, false, maxTextLength: 10);
+    return GeneratedTextColumn('nome', $tableName, false, maxTextLength: 30);
+  }
+
+  final VerificationMeta _valororiginalMeta =
+      const VerificationMeta('valororiginal');
+  GeneratedIntColumn _valororiginal;
+  @override
+  GeneratedIntColumn get valororiginal =>
+      _valororiginal ??= _constructValororiginal();
+  GeneratedIntColumn _constructValororiginal() {
+    return GeneratedIntColumn(
+      'valororiginal',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _valorresidualMeta =
+      const VerificationMeta('valorresidual');
+  GeneratedIntColumn _valorresidual;
+  @override
+  GeneratedIntColumn get valorresidual =>
+      _valorresidual ??= _constructValorresidual();
+  GeneratedIntColumn _constructValorresidual() {
+    return GeneratedIntColumn(
+      'valorresidual',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _vidautilMeta = const VerificationMeta('vidautil');
@@ -621,8 +662,16 @@ class $ItensTable extends Itens with TableInfo<$ItensTable, Iten> {
   }
 
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, nome, vidautil, percentual, deprec3, deprec1];
+  List<GeneratedColumn> get $columns => [
+        id,
+        nome,
+        valororiginal,
+        valorresidual,
+        vidautil,
+        percentual,
+        deprec3,
+        deprec1
+      ];
   @override
   $ItensTable get asDslTable => this;
   @override
@@ -643,6 +692,22 @@ class $ItensTable extends Itens with TableInfo<$ItensTable, Iten> {
           _nomeMeta, nome.isAcceptableValue(d.nome.value, _nomeMeta));
     } else if (nome.isRequired && isInserting) {
       context.missing(_nomeMeta);
+    }
+    if (d.valororiginal.present) {
+      context.handle(
+          _valororiginalMeta,
+          valororiginal.isAcceptableValue(
+              d.valororiginal.value, _valororiginalMeta));
+    } else if (valororiginal.isRequired && isInserting) {
+      context.missing(_valororiginalMeta);
+    }
+    if (d.valorresidual.present) {
+      context.handle(
+          _valorresidualMeta,
+          valorresidual.isAcceptableValue(
+              d.valorresidual.value, _valorresidualMeta));
+    } else if (valorresidual.isRequired && isInserting) {
+      context.missing(_valorresidualMeta);
     }
     if (d.vidautil.present) {
       context.handle(_vidautilMeta,
@@ -688,6 +753,12 @@ class $ItensTable extends Itens with TableInfo<$ItensTable, Iten> {
     if (d.nome.present) {
       map['nome'] = Variable<String, StringType>(d.nome.value);
     }
+    if (d.valororiginal.present) {
+      map['valororiginal'] = Variable<int, IntType>(d.valororiginal.value);
+    }
+    if (d.valorresidual.present) {
+      map['valorresidual'] = Variable<int, IntType>(d.valorresidual.value);
+    }
     if (d.vidautil.present) {
       map['vidautil'] = Variable<int, IntType>(d.vidautil.value);
     }
@@ -711,9 +782,14 @@ class $ItensTable extends Itens with TableInfo<$ItensTable, Iten> {
 
 class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
   final int id;
+  final String nome;
   final int prince;
   final String ano;
-  MaoDeObra({@required this.id, @required this.prince, @required this.ano});
+  MaoDeObra(
+      {this.id,
+      @required this.nome,
+      @required this.prince,
+      @required this.ano});
   factory MaoDeObra.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -721,6 +797,7 @@ class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
     final stringType = db.typeSystem.forDartType<String>();
     return MaoDeObra(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      nome: stringType.mapFromDatabaseResponse(data['${effectivePrefix}nome']),
       prince: intType.mapFromDatabaseResponse(data['${effectivePrefix}prince']),
       ano: stringType.mapFromDatabaseResponse(data['${effectivePrefix}ano']),
     );
@@ -729,6 +806,7 @@ class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return MaoDeObra(
       id: serializer.fromJson<int>(json['id']),
+      nome: serializer.fromJson<String>(json['nome']),
       prince: serializer.fromJson<int>(json['prince']),
       ano: serializer.fromJson<String>(json['ano']),
     );
@@ -738,23 +816,27 @@ class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
       'id': serializer.toJson<int>(id),
+      'nome': serializer.toJson<String>(nome),
       'prince': serializer.toJson<int>(prince),
       'ano': serializer.toJson<String>(ano),
     };
   }
 
   @override
-  MaoDeObrasCompanion createCompanion(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<MaoDeObra>>(bool nullToAbsent) {
     return MaoDeObrasCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      nome: nome == null && nullToAbsent ? const Value.absent() : Value(nome),
       prince:
           prince == null && nullToAbsent ? const Value.absent() : Value(prince),
       ano: ano == null && nullToAbsent ? const Value.absent() : Value(ano),
-    );
+    ) as T;
   }
 
-  MaoDeObra copyWith({int id, int prince, String ano}) => MaoDeObra(
+  MaoDeObra copyWith({int id, String nome, int prince, String ano}) =>
+      MaoDeObra(
         id: id ?? this.id,
+        nome: nome ?? this.nome,
         prince: prince ?? this.prince,
         ano: ano ?? this.ano,
       );
@@ -762,6 +844,7 @@ class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
   String toString() {
     return (StringBuffer('MaoDeObra(')
           ..write('id: $id, ')
+          ..write('nome: $nome, ')
           ..write('prince: $prince, ')
           ..write('ano: $ano')
           ..write(')'))
@@ -769,36 +852,37 @@ class MaoDeObra extends DataClass implements Insertable<MaoDeObra> {
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(prince.hashCode, ano.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode, $mrjc(nome.hashCode, $mrjc(prince.hashCode, ano.hashCode))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is MaoDeObra &&
-          other.id == this.id &&
-          other.prince == this.prince &&
-          other.ano == this.ano);
+          other.id == id &&
+          other.nome == nome &&
+          other.prince == prince &&
+          other.ano == ano);
 }
 
 class MaoDeObrasCompanion extends UpdateCompanion<MaoDeObra> {
   final Value<int> id;
+  final Value<String> nome;
   final Value<int> prince;
   final Value<String> ano;
   const MaoDeObrasCompanion({
     this.id = const Value.absent(),
+    this.nome = const Value.absent(),
     this.prince = const Value.absent(),
     this.ano = const Value.absent(),
   });
-  MaoDeObrasCompanion.insert({
-    this.id = const Value.absent(),
-    @required int prince,
-    @required String ano,
-  })  : prince = Value(prince),
-        ano = Value(ano);
   MaoDeObrasCompanion copyWith(
-      {Value<int> id, Value<int> prince, Value<String> ano}) {
+      {Value<int> id,
+      Value<String> nome,
+      Value<int> prince,
+      Value<String> ano}) {
     return MaoDeObrasCompanion(
       id: id ?? this.id,
+      nome: nome ?? this.nome,
       prince: prince ?? this.prince,
       ano: ano ?? this.ano,
     );
@@ -817,6 +901,18 @@ class $MaoDeObrasTable extends MaoDeObras
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nomeMeta = const VerificationMeta('nome');
+  GeneratedTextColumn _nome;
+  @override
+  GeneratedTextColumn get nome => _nome ??= _constructNome();
+  GeneratedTextColumn _constructNome() {
+    return GeneratedTextColumn(
+      'nome',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _princeMeta = const VerificationMeta('prince');
@@ -844,7 +940,7 @@ class $MaoDeObrasTable extends MaoDeObras
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, prince, ano];
+  List<GeneratedColumn> get $columns => [id, nome, prince, ano];
   @override
   $MaoDeObrasTable get asDslTable => this;
   @override
@@ -859,6 +955,12 @@ class $MaoDeObrasTable extends MaoDeObras
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
+    }
+    if (d.nome.present) {
+      context.handle(
+          _nomeMeta, nome.isAcceptableValue(d.nome.value, _nomeMeta));
+    } else if (nome.isRequired && isInserting) {
+      context.missing(_nomeMeta);
     }
     if (d.prince.present) {
       context.handle(
@@ -888,6 +990,9 @@ class $MaoDeObrasTable extends MaoDeObras
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
     }
+    if (d.nome.present) {
+      map['nome'] = Variable<String, StringType>(d.nome.value);
+    }
     if (d.prince.present) {
       map['prince'] = Variable<int, IntType>(d.prince.value);
     }
@@ -905,9 +1010,14 @@ class $MaoDeObrasTable extends MaoDeObras
 
 class Insumo extends DataClass implements Insertable<Insumo> {
   final int id;
+  final String nome;
   final int prince;
   final String ano;
-  Insumo({@required this.id, @required this.prince, @required this.ano});
+  Insumo(
+      {this.id,
+      @required this.nome,
+      @required this.prince,
+      @required this.ano});
   factory Insumo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -915,6 +1025,7 @@ class Insumo extends DataClass implements Insertable<Insumo> {
     final stringType = db.typeSystem.forDartType<String>();
     return Insumo(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      nome: stringType.mapFromDatabaseResponse(data['${effectivePrefix}nome']),
       prince: intType.mapFromDatabaseResponse(data['${effectivePrefix}prince']),
       ano: stringType.mapFromDatabaseResponse(data['${effectivePrefix}ano']),
     );
@@ -923,6 +1034,7 @@ class Insumo extends DataClass implements Insertable<Insumo> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return Insumo(
       id: serializer.fromJson<int>(json['id']),
+      nome: serializer.fromJson<String>(json['nome']),
       prince: serializer.fromJson<int>(json['prince']),
       ano: serializer.fromJson<String>(json['ano']),
     );
@@ -932,23 +1044,26 @@ class Insumo extends DataClass implements Insertable<Insumo> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
       'id': serializer.toJson<int>(id),
+      'nome': serializer.toJson<String>(nome),
       'prince': serializer.toJson<int>(prince),
       'ano': serializer.toJson<String>(ano),
     };
   }
 
   @override
-  InsumosCompanion createCompanion(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<Insumo>>(bool nullToAbsent) {
     return InsumosCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      nome: nome == null && nullToAbsent ? const Value.absent() : Value(nome),
       prince:
           prince == null && nullToAbsent ? const Value.absent() : Value(prince),
       ano: ano == null && nullToAbsent ? const Value.absent() : Value(ano),
-    );
+    ) as T;
   }
 
-  Insumo copyWith({int id, int prince, String ano}) => Insumo(
+  Insumo copyWith({int id, String nome, int prince, String ano}) => Insumo(
         id: id ?? this.id,
+        nome: nome ?? this.nome,
         prince: prince ?? this.prince,
         ano: ano ?? this.ano,
       );
@@ -956,6 +1071,7 @@ class Insumo extends DataClass implements Insertable<Insumo> {
   String toString() {
     return (StringBuffer('Insumo(')
           ..write('id: $id, ')
+          ..write('nome: $nome, ')
           ..write('prince: $prince, ')
           ..write('ano: $ano')
           ..write(')'))
@@ -963,36 +1079,37 @@ class Insumo extends DataClass implements Insertable<Insumo> {
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(prince.hashCode, ano.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode, $mrjc(nome.hashCode, $mrjc(prince.hashCode, ano.hashCode))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Insumo &&
-          other.id == this.id &&
-          other.prince == this.prince &&
-          other.ano == this.ano);
+          other.id == id &&
+          other.nome == nome &&
+          other.prince == prince &&
+          other.ano == ano);
 }
 
 class InsumosCompanion extends UpdateCompanion<Insumo> {
   final Value<int> id;
+  final Value<String> nome;
   final Value<int> prince;
   final Value<String> ano;
   const InsumosCompanion({
     this.id = const Value.absent(),
+    this.nome = const Value.absent(),
     this.prince = const Value.absent(),
     this.ano = const Value.absent(),
   });
-  InsumosCompanion.insert({
-    this.id = const Value.absent(),
-    @required int prince,
-    @required String ano,
-  })  : prince = Value(prince),
-        ano = Value(ano);
   InsumosCompanion copyWith(
-      {Value<int> id, Value<int> prince, Value<String> ano}) {
+      {Value<int> id,
+      Value<String> nome,
+      Value<int> prince,
+      Value<String> ano}) {
     return InsumosCompanion(
       id: id ?? this.id,
+      nome: nome ?? this.nome,
       prince: prince ?? this.prince,
       ano: ano ?? this.ano,
     );
@@ -1010,6 +1127,18 @@ class $InsumosTable extends Insumos with TableInfo<$InsumosTable, Insumo> {
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nomeMeta = const VerificationMeta('nome');
+  GeneratedTextColumn _nome;
+  @override
+  GeneratedTextColumn get nome => _nome ??= _constructNome();
+  GeneratedTextColumn _constructNome() {
+    return GeneratedTextColumn(
+      'nome',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _princeMeta = const VerificationMeta('prince');
@@ -1037,7 +1166,7 @@ class $InsumosTable extends Insumos with TableInfo<$InsumosTable, Insumo> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, prince, ano];
+  List<GeneratedColumn> get $columns => [id, nome, prince, ano];
   @override
   $InsumosTable get asDslTable => this;
   @override
@@ -1052,6 +1181,12 @@ class $InsumosTable extends Insumos with TableInfo<$InsumosTable, Insumo> {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
+    }
+    if (d.nome.present) {
+      context.handle(
+          _nomeMeta, nome.isAcceptableValue(d.nome.value, _nomeMeta));
+    } else if (nome.isRequired && isInserting) {
+      context.missing(_nomeMeta);
     }
     if (d.prince.present) {
       context.handle(
@@ -1081,6 +1216,9 @@ class $InsumosTable extends Insumos with TableInfo<$InsumosTable, Insumo> {
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
     }
+    if (d.nome.present) {
+      map['nome'] = Variable<String, StringType>(d.nome.value);
+    }
     if (d.prince.present) {
       map['prince'] = Variable<int, IntType>(d.prince.value);
     }
@@ -1098,9 +1236,14 @@ class $InsumosTable extends Insumos with TableInfo<$InsumosTable, Insumo> {
 
 class Despesa extends DataClass implements Insertable<Despesa> {
   final int id;
+  final String nome;
   final int prince;
   final String ano;
-  Despesa({@required this.id, @required this.prince, @required this.ano});
+  Despesa(
+      {@required this.id,
+      @required this.nome,
+      @required this.prince,
+      @required this.ano});
   factory Despesa.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1108,6 +1251,7 @@ class Despesa extends DataClass implements Insertable<Despesa> {
     final stringType = db.typeSystem.forDartType<String>();
     return Despesa(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      nome: stringType.mapFromDatabaseResponse(data['${effectivePrefix}nome']),
       prince: intType.mapFromDatabaseResponse(data['${effectivePrefix}prince']),
       ano: stringType.mapFromDatabaseResponse(data['${effectivePrefix}ano']),
     );
@@ -1116,6 +1260,7 @@ class Despesa extends DataClass implements Insertable<Despesa> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return Despesa(
       id: serializer.fromJson<int>(json['id']),
+      nome: serializer.fromJson<String>(json['nome']),
       prince: serializer.fromJson<int>(json['prince']),
       ano: serializer.fromJson<String>(json['ano']),
     );
@@ -1125,23 +1270,26 @@ class Despesa extends DataClass implements Insertable<Despesa> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
       'id': serializer.toJson<int>(id),
+      'nome': serializer.toJson<String>(nome),
       'prince': serializer.toJson<int>(prince),
       'ano': serializer.toJson<String>(ano),
     };
   }
 
   @override
-  DespesasCompanion createCompanion(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<Despesa>>(bool nullToAbsent) {
     return DespesasCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      nome: nome == null && nullToAbsent ? const Value.absent() : Value(nome),
       prince:
           prince == null && nullToAbsent ? const Value.absent() : Value(prince),
       ano: ano == null && nullToAbsent ? const Value.absent() : Value(ano),
-    );
+    ) as T;
   }
 
-  Despesa copyWith({int id, int prince, String ano}) => Despesa(
+  Despesa copyWith({int id, String nome, int prince, String ano}) => Despesa(
         id: id ?? this.id,
+        nome: nome ?? this.nome,
         prince: prince ?? this.prince,
         ano: ano ?? this.ano,
       );
@@ -1149,6 +1297,7 @@ class Despesa extends DataClass implements Insertable<Despesa> {
   String toString() {
     return (StringBuffer('Despesa(')
           ..write('id: $id, ')
+          ..write('nome: $nome, ')
           ..write('prince: $prince, ')
           ..write('ano: $ano')
           ..write(')'))
@@ -1156,36 +1305,37 @@ class Despesa extends DataClass implements Insertable<Despesa> {
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(prince.hashCode, ano.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode, $mrjc(nome.hashCode, $mrjc(prince.hashCode, ano.hashCode))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Despesa &&
-          other.id == this.id &&
-          other.prince == this.prince &&
-          other.ano == this.ano);
+          other.id == id &&
+          other.nome == nome &&
+          other.prince == prince &&
+          other.ano == ano);
 }
 
 class DespesasCompanion extends UpdateCompanion<Despesa> {
   final Value<int> id;
+  final Value<String> nome;
   final Value<int> prince;
   final Value<String> ano;
   const DespesasCompanion({
     this.id = const Value.absent(),
+    this.nome = const Value.absent(),
     this.prince = const Value.absent(),
     this.ano = const Value.absent(),
   });
-  DespesasCompanion.insert({
-    this.id = const Value.absent(),
-    @required int prince,
-    @required String ano,
-  })  : prince = Value(prince),
-        ano = Value(ano);
   DespesasCompanion copyWith(
-      {Value<int> id, Value<int> prince, Value<String> ano}) {
+      {Value<int> id,
+      Value<String> nome,
+      Value<int> prince,
+      Value<String> ano}) {
     return DespesasCompanion(
       id: id ?? this.id,
+      nome: nome ?? this.nome,
       prince: prince ?? this.prince,
       ano: ano ?? this.ano,
     );
@@ -1203,6 +1353,18 @@ class $DespesasTable extends Despesas with TableInfo<$DespesasTable, Despesa> {
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nomeMeta = const VerificationMeta('nome');
+  GeneratedTextColumn _nome;
+  @override
+  GeneratedTextColumn get nome => _nome ??= _constructNome();
+  GeneratedTextColumn _constructNome() {
+    return GeneratedTextColumn(
+      'nome',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _princeMeta = const VerificationMeta('prince');
@@ -1230,7 +1392,7 @@ class $DespesasTable extends Despesas with TableInfo<$DespesasTable, Despesa> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, prince, ano];
+  List<GeneratedColumn> get $columns => [id, nome, prince, ano];
   @override
   $DespesasTable get asDslTable => this;
   @override
@@ -1245,6 +1407,12 @@ class $DespesasTable extends Despesas with TableInfo<$DespesasTable, Despesa> {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
+    }
+    if (d.nome.present) {
+      context.handle(
+          _nomeMeta, nome.isAcceptableValue(d.nome.value, _nomeMeta));
+    } else if (nome.isRequired && isInserting) {
+      context.missing(_nomeMeta);
     }
     if (d.prince.present) {
       context.handle(
@@ -1274,6 +1442,9 @@ class $DespesasTable extends Despesas with TableInfo<$DespesasTable, Despesa> {
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
     }
+    if (d.nome.present) {
+      map['nome'] = Variable<String, StringType>(d.nome.value);
+    }
     if (d.prince.present) {
       map['prince'] = Variable<int, IntType>(d.prince.value);
     }
@@ -1291,9 +1462,14 @@ class $DespesasTable extends Despesas with TableInfo<$DespesasTable, Despesa> {
 
 class Outro extends DataClass implements Insertable<Outro> {
   final int id;
+  final String nome;
   final int prince;
   final String ano;
-  Outro({@required this.id, @required this.prince, @required this.ano});
+  Outro(
+      {@required this.id,
+      @required this.nome,
+      @required this.prince,
+      @required this.ano});
   factory Outro.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1301,6 +1477,7 @@ class Outro extends DataClass implements Insertable<Outro> {
     final stringType = db.typeSystem.forDartType<String>();
     return Outro(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      nome: stringType.mapFromDatabaseResponse(data['${effectivePrefix}nome']),
       prince: intType.mapFromDatabaseResponse(data['${effectivePrefix}prince']),
       ano: stringType.mapFromDatabaseResponse(data['${effectivePrefix}ano']),
     );
@@ -1309,6 +1486,7 @@ class Outro extends DataClass implements Insertable<Outro> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return Outro(
       id: serializer.fromJson<int>(json['id']),
+      nome: serializer.fromJson<String>(json['nome']),
       prince: serializer.fromJson<int>(json['prince']),
       ano: serializer.fromJson<String>(json['ano']),
     );
@@ -1318,23 +1496,26 @@ class Outro extends DataClass implements Insertable<Outro> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
       'id': serializer.toJson<int>(id),
+      'nome': serializer.toJson<String>(nome),
       'prince': serializer.toJson<int>(prince),
       'ano': serializer.toJson<String>(ano),
     };
   }
 
   @override
-  OutrosCompanion createCompanion(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<Outro>>(bool nullToAbsent) {
     return OutrosCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      nome: nome == null && nullToAbsent ? const Value.absent() : Value(nome),
       prince:
           prince == null && nullToAbsent ? const Value.absent() : Value(prince),
       ano: ano == null && nullToAbsent ? const Value.absent() : Value(ano),
-    );
+    ) as T;
   }
 
-  Outro copyWith({int id, int prince, String ano}) => Outro(
+  Outro copyWith({int id, String nome, int prince, String ano}) => Outro(
         id: id ?? this.id,
+        nome: nome ?? this.nome,
         prince: prince ?? this.prince,
         ano: ano ?? this.ano,
       );
@@ -1342,6 +1523,7 @@ class Outro extends DataClass implements Insertable<Outro> {
   String toString() {
     return (StringBuffer('Outro(')
           ..write('id: $id, ')
+          ..write('nome: $nome, ')
           ..write('prince: $prince, ')
           ..write('ano: $ano')
           ..write(')'))
@@ -1349,36 +1531,37 @@ class Outro extends DataClass implements Insertable<Outro> {
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(prince.hashCode, ano.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode, $mrjc(nome.hashCode, $mrjc(prince.hashCode, ano.hashCode))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Outro &&
-          other.id == this.id &&
-          other.prince == this.prince &&
-          other.ano == this.ano);
+          other.id == id &&
+          other.nome == nome &&
+          other.prince == prince &&
+          other.ano == ano);
 }
 
 class OutrosCompanion extends UpdateCompanion<Outro> {
   final Value<int> id;
+  final Value<String> nome;
   final Value<int> prince;
   final Value<String> ano;
   const OutrosCompanion({
     this.id = const Value.absent(),
+    this.nome = const Value.absent(),
     this.prince = const Value.absent(),
     this.ano = const Value.absent(),
   });
-  OutrosCompanion.insert({
-    this.id = const Value.absent(),
-    @required int prince,
-    @required String ano,
-  })  : prince = Value(prince),
-        ano = Value(ano);
   OutrosCompanion copyWith(
-      {Value<int> id, Value<int> prince, Value<String> ano}) {
+      {Value<int> id,
+      Value<String> nome,
+      Value<int> prince,
+      Value<String> ano}) {
     return OutrosCompanion(
       id: id ?? this.id,
+      nome: nome ?? this.nome,
       prince: prince ?? this.prince,
       ano: ano ?? this.ano,
     );
@@ -1396,6 +1579,18 @@ class $OutrosTable extends Outros with TableInfo<$OutrosTable, Outro> {
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nomeMeta = const VerificationMeta('nome');
+  GeneratedTextColumn _nome;
+  @override
+  GeneratedTextColumn get nome => _nome ??= _constructNome();
+  GeneratedTextColumn _constructNome() {
+    return GeneratedTextColumn(
+      'nome',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _princeMeta = const VerificationMeta('prince');
@@ -1423,7 +1618,7 @@ class $OutrosTable extends Outros with TableInfo<$OutrosTable, Outro> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, prince, ano];
+  List<GeneratedColumn> get $columns => [id, nome, prince, ano];
   @override
   $OutrosTable get asDslTable => this;
   @override
@@ -1438,6 +1633,12 @@ class $OutrosTable extends Outros with TableInfo<$OutrosTable, Outro> {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
+    }
+    if (d.nome.present) {
+      context.handle(
+          _nomeMeta, nome.isAcceptableValue(d.nome.value, _nomeMeta));
+    } else if (nome.isRequired && isInserting) {
+      context.missing(_nomeMeta);
     }
     if (d.prince.present) {
       context.handle(
@@ -1467,6 +1668,9 @@ class $OutrosTable extends Outros with TableInfo<$OutrosTable, Outro> {
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
     }
+    if (d.nome.present) {
+      map['nome'] = Variable<String, StringType>(d.nome.value);
+    }
     if (d.prince.present) {
       map['prince'] = Variable<int, IntType>(d.prince.value);
     }
@@ -1482,8 +1686,256 @@ class $OutrosTable extends Outros with TableInfo<$OutrosTable, Outro> {
   }
 }
 
+class CustosIndireto extends DataClass implements Insertable<CustosIndireto> {
+  final int id;
+  final int depreciacao;
+  final int custooportt;
+  final int custooportc;
+  CustosIndireto(
+      {this.id,
+      @required this.depreciacao,
+      @required this.custooportt,
+      @required this.custooportc});
+  factory CustosIndireto.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    return CustosIndireto(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      depreciacao: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}depreciacao']),
+      custooportt: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}custooportt']),
+      custooportc: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}custooportc']),
+    );
+  }
+  factory CustosIndireto.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return CustosIndireto(
+      id: serializer.fromJson<int>(json['id']),
+      depreciacao: serializer.fromJson<int>(json['depreciacao']),
+      custooportt: serializer.fromJson<int>(json['custooportt']),
+      custooportc: serializer.fromJson<int>(json['custooportc']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return {
+      'id': serializer.toJson<int>(id),
+      'depreciacao': serializer.toJson<int>(depreciacao),
+      'custooportt': serializer.toJson<int>(custooportt),
+      'custooportc': serializer.toJson<int>(custooportc),
+    };
+  }
+
+  @override
+  T createCompanion<T extends UpdateCompanion<CustosIndireto>>(
+      bool nullToAbsent) {
+    return CustosIndiretosCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      depreciacao: depreciacao == null && nullToAbsent
+          ? const Value.absent()
+          : Value(depreciacao),
+      custooportt: custooportt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(custooportt),
+      custooportc: custooportc == null && nullToAbsent
+          ? const Value.absent()
+          : Value(custooportc),
+    ) as T;
+  }
+
+  CustosIndireto copyWith(
+          {int id, int depreciacao, int custooportt, int custooportc}) =>
+      CustosIndireto(
+        id: id ?? this.id,
+        depreciacao: depreciacao ?? this.depreciacao,
+        custooportt: custooportt ?? this.custooportt,
+        custooportc: custooportc ?? this.custooportc,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('CustosIndireto(')
+          ..write('id: $id, ')
+          ..write('depreciacao: $depreciacao, ')
+          ..write('custooportt: $custooportt, ')
+          ..write('custooportc: $custooportc')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(depreciacao.hashCode,
+          $mrjc(custooportt.hashCode, custooportc.hashCode))));
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is CustosIndireto &&
+          other.id == id &&
+          other.depreciacao == depreciacao &&
+          other.custooportt == custooportt &&
+          other.custooportc == custooportc);
+}
+
+class CustosIndiretosCompanion extends UpdateCompanion<CustosIndireto> {
+  final Value<int> id;
+  final Value<int> depreciacao;
+  final Value<int> custooportt;
+  final Value<int> custooportc;
+  const CustosIndiretosCompanion({
+    this.id = const Value.absent(),
+    this.depreciacao = const Value.absent(),
+    this.custooportt = const Value.absent(),
+    this.custooportc = const Value.absent(),
+  });
+  CustosIndiretosCompanion copyWith(
+      {Value<int> id,
+      Value<int> depreciacao,
+      Value<int> custooportt,
+      Value<int> custooportc}) {
+    return CustosIndiretosCompanion(
+      id: id ?? this.id,
+      depreciacao: depreciacao ?? this.depreciacao,
+      custooportt: custooportt ?? this.custooportt,
+      custooportc: custooportc ?? this.custooportc,
+    );
+  }
+}
+
+class $CustosIndiretosTable extends CustosIndiretos
+    with TableInfo<$CustosIndiretosTable, CustosIndireto> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $CustosIndiretosTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _depreciacaoMeta =
+      const VerificationMeta('depreciacao');
+  GeneratedIntColumn _depreciacao;
+  @override
+  GeneratedIntColumn get depreciacao =>
+      _depreciacao ??= _constructDepreciacao();
+  GeneratedIntColumn _constructDepreciacao() {
+    return GeneratedIntColumn(
+      'depreciacao',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _custooporttMeta =
+      const VerificationMeta('custooportt');
+  GeneratedIntColumn _custooportt;
+  @override
+  GeneratedIntColumn get custooportt =>
+      _custooportt ??= _constructCustooportt();
+  GeneratedIntColumn _constructCustooportt() {
+    return GeneratedIntColumn(
+      'custooportt',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _custooportcMeta =
+      const VerificationMeta('custooportc');
+  GeneratedIntColumn _custooportc;
+  @override
+  GeneratedIntColumn get custooportc =>
+      _custooportc ??= _constructCustooportc();
+  GeneratedIntColumn _constructCustooportc() {
+    return GeneratedIntColumn(
+      'custooportc',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, depreciacao, custooportt, custooportc];
+  @override
+  $CustosIndiretosTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'custos_indiretos';
+  @override
+  final String actualTableName = 'custos_indiretos';
+  @override
+  VerificationContext validateIntegrity(CustosIndiretosCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    } else if (id.isRequired && isInserting) {
+      context.missing(_idMeta);
+    }
+    if (d.depreciacao.present) {
+      context.handle(_depreciacaoMeta,
+          depreciacao.isAcceptableValue(d.depreciacao.value, _depreciacaoMeta));
+    } else if (depreciacao.isRequired && isInserting) {
+      context.missing(_depreciacaoMeta);
+    }
+    if (d.custooportt.present) {
+      context.handle(_custooporttMeta,
+          custooportt.isAcceptableValue(d.custooportt.value, _custooporttMeta));
+    } else if (custooportt.isRequired && isInserting) {
+      context.missing(_custooporttMeta);
+    }
+    if (d.custooportc.present) {
+      context.handle(_custooportcMeta,
+          custooportc.isAcceptableValue(d.custooportc.value, _custooportcMeta));
+    } else if (custooportc.isRequired && isInserting) {
+      context.missing(_custooportcMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustosIndireto map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return CustosIndireto.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(CustosIndiretosCompanion d) {
+    final map = <String, Variable>{};
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
+    if (d.depreciacao.present) {
+      map['depreciacao'] = Variable<int, IntType>(d.depreciacao.value);
+    }
+    if (d.custooportt.present) {
+      map['custooportt'] = Variable<int, IntType>(d.custooportt.value);
+    }
+    if (d.custooportc.present) {
+      map['custooportc'] = Variable<int, IntType>(d.custooportc.value);
+    }
+    return map;
+  }
+
+  @override
+  $CustosIndiretosTable createAlias(String alias) {
+    return $CustosIndiretosTable(_db, alias);
+  }
+}
+
 abstract class _$MyDataBase extends GeneratedDatabase {
-  _$MyDataBase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$MyDataBase(QueryExecutor e) : super(const SqlTypeSystem.withDefaults(), e);
   $CaracteristicasTable _caracteristicas;
   $CaracteristicasTable get caracteristicas =>
       _caracteristicas ??= $CaracteristicasTable(this);
@@ -1497,7 +1949,17 @@ abstract class _$MyDataBase extends GeneratedDatabase {
   $DespesasTable get despesas => _despesas ??= $DespesasTable(this);
   $OutrosTable _outros;
   $OutrosTable get outros => _outros ??= $OutrosTable(this);
+  $CustosIndiretosTable _custosIndiretos;
+  $CustosIndiretosTable get custosIndiretos =>
+      _custosIndiretos ??= $CustosIndiretosTable(this);
   @override
-  List<TableInfo> get allTables =>
-      [caracteristicas, itens, maoDeObras, insumos, despesas, outros];
+  List<TableInfo> get allTables => [
+        caracteristicas,
+        itens,
+        maoDeObras,
+        insumos,
+        despesas,
+        outros,
+        custosIndiretos
+      ];
 }
